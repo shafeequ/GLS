@@ -1,4 +1,4 @@
-@charset "UTF-8";
+
 
 body {
   font-family: 'Lato', sans-serif;
@@ -58,6 +58,7 @@ header .btn-wrapper {
   float: left;
   padding: 0 0 20px 0;
   margin: 0;
+  line-height: 16px;
 }
 
 .main-container .content p {

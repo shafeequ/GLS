@@ -22,7 +22,6 @@ request.onload = function() {
 
 request.onerror = function() {
   // There was a connection error of some sort
-  console.log("Connection Error")
 };
 
 request.send();
@@ -50,6 +49,7 @@ function positionTooltip(event) {
     if(event) {
       event.stopPropagation();
       var targetElem = event.target;
+      console.log(event.target);
       var targetText = targetElem.innerText.toLowerCase();
 
       if(targetText == 'next'){
@@ -86,7 +86,7 @@ function positionTooltip(event) {
     else {
       var elem = document.querySelector(selector);
     }
-    var scrollTo = elem.getBoundingClientRect().top + window.scrollY-100;
+    var scrollTo = Math.ceil(elem.getBoundingClientRect().top) + window.scrollY-100;
 
 
         //scrolls to the element mentioned in the json
@@ -96,10 +96,10 @@ function positionTooltip(event) {
         });
 
         window.onscroll = e => {
-          let currentScrollOffset = window.pageYOffset || document.documentElement.scrollTop;
+          let currentScrollOffset = window.scrollY;
 
           // on the scroll is finished, load the tooltip
-          if (currentScrollOffset == Math.ceil(scrollTo)) {
+          if (currentScrollOffset == scrollTo) {
 
             document.querySelector(".tooltip-number").innerText = toolTipId;
             document.querySelector(".tooltip-title").innerText = toolTipTitle;
