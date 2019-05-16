@@ -1,41 +1,38 @@
+//ADD YOUR CODE HERE.
+
 var jsonData;
 var step=0;
 var totalSteps;
 
-fetch('guide.json').then(function(resp){
-    return resp.json();
-}).then(function(data){
-  jsonData = data.steps;
-  totalSteps = jsonData.length;
-  setInitialTooltip();
 
-});
+//loading the json file
+request = new XMLHttpRequest;
+request.open('GET', 'guide.json', true);
+
+request.onload = function() {
+  if (request.status >= 200 && request.status < 400){
+    response = JSON.parse(request.responseText);
+    jsonData = response.steps;
+    totalSteps = jsonData.length;
+    positionTooltip();
+  } else {
+    // We reached our target server, but it returned an error
+  }
+};
+
+request.onerror = function() {
+  // There was a connection error of some sort
+  console.log("Connection Error")
+};
+
+request.send();
 
 
-function setInitialTooltip() {
-
-  document.querySelector(".tooltip-back").classList.add('hide');
-  document.querySelector(".tooltip-next").classList.add('hide');
-  document.querySelector(".tooltip-done").classList.add('hide');
-  document.querySelector(".tooltip-number").classList.add('hide');
-  document.querySelector(".tooltip-block").classList.add('left');
-
-  document.querySelector(".tooltip-block").classList.remove('fadeOut');
-  document.querySelector(".tooltip-block").classList.add('fadeIn');
-
-  var tourBtnCoords = document.querySelector('.tour-btn').getBoundingClientRect();
-  var top = tourBtnCoords.top;
-  var left = tourBtnCoords.left;
-  var width = tourBtnCoords.width;
-  var height = tourBtnCoords.height;
-  document.querySelector(".tooltip-block").style.top = top+'px';
-  document.querySelector(".tooltip-block").style.left = left+width+30+'px';
-
-}
-
+// binding event for the tooltip close button
 document.querySelector(".tooltip-close").addEventListener("click", closeTooltip);
-document.querySelector(".tour-btn").addEventListener("click", positionTooltip);
+// binding event for the tooltip done button
 document.querySelector(".tooltip-done").addEventListener("click", closeTooltip);
+// binding event for the tooltip next and back buttons
 document.querySelector(".tooltip-actions").addEventListener("click", positionTooltip);
 
 function closeTooltip() {
@@ -43,46 +40,56 @@ function closeTooltip() {
   document.querySelector(".tooltip-block").classList.add('hide');
 }
 
+//function which position the tooltip on pageload/clicking next and back button
 function positionTooltip(event) {
-
-    event.stopPropagation();
 
     document.querySelector(".tooltip-block").classList.add('fadeOut');
     document.querySelector(".tooltip-block").classList.remove('fadeIn');
 
-    var targetElem = event.target;
-    var targetText = targetElem.innerText.toLowerCase();
+    //if the event is from next and back buttons
+    if(event) {
+      event.stopPropagation();
+      var targetElem = event.target;
+      var targetText = targetElem.innerText.toLowerCase();
 
-    if(targetText == 'next' || targetText.indexOf('tour') != -1){
-      step++;
+      if(targetText == 'next'){
+        step++;
+      }
+      else if(targetText == 'back') {
+        step--;
+      }
     }
-    else if(targetText == 'back') {
-      step--;
+    //if the event is on page load
+    else {
+      step++;
     }
 
 
     var toolTipData = jsonData[step-1];
-    var toolTipTitle = toolTipData.title;
-    var toolTipDesp = toolTipData.desp;
+    var toolTipTitle = toolTipData.content;
     var type = toolTipData.type;
     var selector = toolTipData.selector;
     var toolTipId = toolTipData.id;
 
+    var splitElem = selector.split(':');
+    var splitArray=[];
+    splitArray.push(splitElem[1]);
+    var splitNum = splitArray.toString();
+    var splitNode = parseInt(splitNum.match(/\d+/));
 
-    if(type == 'id' || type == 'class') {
-
-      var elem = document.querySelector(selector);
-      var scrollTo = elem.getBoundingClientRect().top + window.scrollY-100;
-
-    }
-    else {
-      var splitElem = selector.split(':');
-      var nthElem = splitElem[1];
-      var parentElem = document.querySelectorAll(splitElem[0])[nthElem];
+    //if the element selector is a node
+    if(splitElem[1]){
+      var parentElem = document.querySelectorAll(splitElem[0])[splitNode];
       var elem = parentElem.children[0];
-      var scrollTo = elem.getBoundingClientRect().top + window.scrollY-100;
     }
+    // if the element selector is a id or class
+    else {
+      var elem = document.querySelector(selector);
+    }
+    var scrollTo = elem.getBoundingClientRect().top + window.scrollY-100;
 
+
+        //scrolls to the element mentioned in the json
         window.scroll({
           top: scrollTo,
           behavior: 'smooth'
@@ -90,12 +97,12 @@ function positionTooltip(event) {
 
         window.onscroll = e => {
           let currentScrollOffset = window.pageYOffset || document.documentElement.scrollTop;
-          // Scroll reach the target
+
+          // on the scroll is finished, load the tooltip
           if (currentScrollOffset == Math.ceil(scrollTo)) {
 
             document.querySelector(".tooltip-number").innerText = toolTipId;
             document.querySelector(".tooltip-title").innerText = toolTipTitle;
-            document.querySelector(".tooltip-desp").innerText = toolTipDesp;
 
             document.querySelector(".tooltip-block").classList.remove('fadeIn');
             document.querySelector(".tooltip-block").classList.add('fadeOut');
@@ -118,6 +125,9 @@ function positionTooltip(event) {
 
               document.querySelector(".tooltip-back").classList.remove('show');
               document.querySelector(".tooltip-back").classList.add('hide');
+
+              document.querySelector(".tooltip-done").classList.add('hide');
+              document.querySelector(".tooltip-done").classList.remove('show');
 
             }
             else if(step>1 && step<totalSteps) {

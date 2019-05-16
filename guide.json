@@ -1,24 +1,18 @@
 {
 	"steps": [{
 		"id": "1",
-		"title": "tip on first div by ID",
-		"desp": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur fringilla risus et",
-		"type":"id",
-		"selector": "#content01",
+		"content": "tip on first div",
+		"selector": "#id_1",
 		"next": "2"
 	}, {
 		"id": "2",
-		"title": "tip on second div by Class",
-		"desp": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur fringilla risus et",
-		"type":"class",
-		"selector": ".special",
+		"content": "tip on second div",
+		"selector": ".myClass2",
 		"next": "3"
 	}, {
 		"id": "3",
-		"title": "tip on third div by tag",
-		"desp": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur fringilla risus et",
-		"type":"nth-element",
-		"selector": ".content:2",
+		"content": "tip on third div.",
+		"selector": ".content:eq(2)",
 		"next": null
 	}]
 }
