@@ -231,18 +231,20 @@ header .btn-wrapper {
 
 .tooltip-close {
   position: absolute;
-  right: 10px;
+  right: -10px;
   top: -12px;
   opacity: 0.3;
   text-indent: -9999px;
   cursor: pointer;
+  width: 16px;
+  height: 16px;
 }
 .tooltip-close:hover {
   opacity: 1;
 }
 .tooltip-close:before, .tooltip-close:after {
   position: absolute;
-  left: 15px;
+  left: 7px;
   content: ' ';
   height: 16px;
   width: 2px;
